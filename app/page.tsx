@@ -4,12 +4,14 @@ import React, { useState } from 'react';
 
 export default function ProfileForm() {
   const [profile, setProfile] = useState({
-    fullName: '',
-    email: '',
-    userName: '',
-    phoneNumber: '',
-    description: '',
+    fullName: 'Abhay Singh',
+    email: 'as198663@gmail.com',
+    userName: 'abhay_singh',
+    phoneNumber: '1234567890',
+    description: 'A passionate seller with expertise in organic products.',
   });
+
+  const [profilePicture, setProfilePicture] = useState('/profile-placeholder.svg'); // Default profile picture
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -18,12 +20,34 @@ export default function ProfileForm() {
 
   const handleReset = () => {
     setProfile({
-      fullName: '',
-      email: '',
-      userName: '',
-      phoneNumber: '',
-      description: '',
+      fullName: 'Abhay Singh',
+      email: 'as198663@gmail.com',
+      userName: 'abhay_singh',
+      phoneNumber: '1234567890',
+      description: 'A passionate seller with expertise in organic products.',
     });
+    setProfilePicture('/profile-placeholder.svg'); // Reset profile picture
+  };
+
+  const handleEditProfile = () => {
+    console.log('Profile updated:', profile);
+    alert('Profile updated successfully!');
+  };
+
+  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        if (reader.result) {
+          setProfilePicture(reader.result as string);
+          alert(`Profile picture updated to ${file.name}`);
+        }
+      };
+
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -31,12 +55,7 @@ export default function ProfileForm() {
       {/* Sidebar */}
       <div className="w-1/4 bg-gray-800 text-white shadow-md">
         <div className="p-4 border-b border-gray-700">
-          {/* Replacing BioMandi text with an image */}
-          <img
-            src="/profile-placeholder.svg"  // Replace with the actual image path
-            alt="BioMandi Logo"
-            className="w-32 h-auto"  // Adjust the width and height as needed
-          />
+          <img src="/profile-placeholder.svg" alt="BioMandi Logo" className="w-32 h-auto" />
         </div>
         <nav className="mt-4">
           {[
@@ -65,20 +84,26 @@ export default function ProfileForm() {
 
       {/* Main Content */}
       <div className="flex-1 p-8">
-      <h1 className="text-2xl font-bold mb-6 text-gray-900">Profile Information</h1>
+        <h1 className="text-2xl font-bold mb-6 text-gray-900">Profile Information</h1>
         <div className="bg-white p-6 rounded-lg shadow-lg">
           {/* Profile Picture */}
           <div className="flex items-center mb-6">
             <div className="w-20 h-20 rounded-full bg-gray-300 overflow-hidden">
               <img
-                src="/profile.jpg"  // Correct path to profile picture in the public folder
+                src={profilePicture}
                 alt="Profile"
                 className="w-full h-full object-cover"
               />
             </div>
-            <button className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            <label className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer">
               Change profile picture
-            </button>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleProfilePictureChange}
+              />
+            </label>
           </div>
 
           {/* Form Fields */}
@@ -91,7 +116,7 @@ export default function ProfileForm() {
                 value={profile.fullName}
                 onChange={handleChange}
                 placeholder="Please enter full name"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-800"
               />
             </div>
             <div>
@@ -102,7 +127,7 @@ export default function ProfileForm() {
                 value={profile.email}
                 onChange={handleChange}
                 placeholder="Please enter your email"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-800"
               />
             </div>
             <div>
@@ -113,7 +138,7 @@ export default function ProfileForm() {
                 value={profile.userName}
                 onChange={handleChange}
                 placeholder="Please enter user name"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-800"
               />
             </div>
             <div>
@@ -124,7 +149,7 @@ export default function ProfileForm() {
                 value={profile.phoneNumber}
                 onChange={handleChange}
                 placeholder="Please enter your phone number"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-800"
               />
             </div>
             <div className="col-span-2">
@@ -134,7 +159,7 @@ export default function ProfileForm() {
                 value={profile.description}
                 onChange={handleChange}
                 placeholder="Write a brief description about your business"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-800"
               ></textarea>
             </div>
           </div>
@@ -147,7 +172,10 @@ export default function ProfileForm() {
             >
               Reset
             </button>
-            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+            <button
+              onClick={handleEditProfile}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
               Edit Profile
             </button>
           </div>
