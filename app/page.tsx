@@ -1,21 +1,30 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function ProfileForm() {
-  const [profile, setProfile] = useState({
+  // Retrieve profile data from local storage or set default values
+  const storedProfile = typeof window !== 'undefined' ? localStorage.getItem('profile') : null;
+  const storedProfilePicture = typeof window !== 'undefined' ? localStorage.getItem('profilePicture') : null;
+
+  const initialProfile = storedProfile ? JSON.parse(storedProfile) : {
     fullName: 'Abhay Singh',
     email: 'as198663@gmail.com',
     userName: 'abhay_singh',
     phoneNumber: '1234567890',
     description: 'A passionate seller with expertise in organic products.',
-  });
+  };
 
-  const [profilePicture, setProfilePicture] = useState('/profile-placeholder.svg'); // Default profile picture
+  const initialProfilePicture = storedProfilePicture || '/profile-placeholder.svg';
+
+  const [profile, setProfile] = useState(initialProfile);
+  const [profilePicture, setProfilePicture] = useState(initialProfilePicture);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setProfile({ ...profile, [name]: value });
+    const updatedProfile = { ...profile, [name]: value };
+    setProfile(updatedProfile);
+    localStorage.setItem('profile', JSON.stringify(updatedProfile)); // Save profile to local storage
   };
 
   const handleReset = () => {
@@ -26,7 +35,15 @@ export default function ProfileForm() {
       phoneNumber: '1234567890',
       description: 'A passionate seller with expertise in organic products.',
     });
-    setProfilePicture('/profile-placeholder.svg'); // Reset profile picture
+    setProfilePicture('/profile-placeholder.svg');
+    localStorage.setItem('profile', JSON.stringify({
+      fullName: 'Abhay Singh',
+      email: 'as198663@gmail.com',
+      userName: 'abhay_singh',
+      phoneNumber: '1234567890',
+      description: 'A passionate seller with expertise in organic products.',
+    })); // Reset profile in local storage
+    localStorage.setItem('profilePicture', '/profile-placeholder.svg'); // Reset profile picture in local storage
   };
 
   const handleEditProfile = () => {
@@ -43,6 +60,7 @@ export default function ProfileForm() {
         if (reader.result) {
           setProfilePicture(reader.result as string);
           alert(`Profile picture updated to ${file.name}`);
+          localStorage.setItem('profilePicture', reader.result as string); // Save profile picture to local storage
         }
       };
 
